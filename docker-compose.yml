@@ -1,0 +1,28 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: akali
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-akali}
+      POSTGRES_DB: akali
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U akali -d akali"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  bot:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://akali:${POSTGRES_PASSWORD:-akali}@db:5432/akali?schema=public
+
+volumes:
+  pgdata:

@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model GuildConfig {
+  guildId            String   @id
+  logChannelId       String?
+  welcomeChannelId   String?
+  welcomeMessage     String   @default("Welcome, {user}! Akali is already watching {server}. You are member #{count}.")
+  goodbyeChannelId   String?
+  autoRoleId         String?
+  levelsEnabled      Boolean  @default(true)
+  levelUpChannelId   String?
+  automodEnabled     Boolean  @default(false)
+  blockLinks         Boolean  @default(false)
+  blockInvites       Boolean  @default(true)
+  blockCaps          Boolean  @default(false)
+  blockSpam          Boolean  @default(true)
+  badWords           String[] @default([])
+  maxWarnsBeforeMute Int      @default(3)
+  muteMinutes        Int      @default(60)
+  radioChannelId     String?
+  radioVolume        Int      @default(50)
+}
+
+model Warning {
+  id          Int      @id @default(autoincrement())
+  guildId     String
+  userId      String
+  moderatorId String
+  reason      String
+  createdAt   DateTime @default(now())
+
+  @@index([guildId, userId])
+}
+
+model Member {
+  guildId   String
+  userId    String
+  xp        Int       @default(0)
+  level     Int       @default(0)
+  messages  Int       @default(0)
+  balance   Int       @default(0)
+  lastDaily DateTime?
+
+  @@id([guildId, userId])
+  @@index([guildId, xp])
+}
+
+model Reminder {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  channelId String
+  message   String
+  dueAt     DateTime
+
+  @@index([dueAt])
+}
