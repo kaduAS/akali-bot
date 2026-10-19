@@ -48,7 +48,7 @@ Everyone creates **their own bot** in Discord (it's free) and runs it locally. T
 ### 3. Download and configure
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/akali-bot.git
+git clone https://github.com/kaduAS/akali-bot.git
 cd akali-bot
 cp .env.example .env     # Windows (cmd): copy .env.example .env
 ```
